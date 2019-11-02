@@ -2,7 +2,7 @@
 
 <meta charset="utf-8" />
 
-<title>WebSocket Test</title>
+<title>Who Am I - designed by Nathalie &amp; Chris</title>
 
 <script language="javascript" type="text/javascript">
   function isSecure()
@@ -68,6 +68,17 @@
 		while (mytab.firstChild){
 			mytab.removeChild(mytab.firstChild)
 		}
+    tr=document.createElement("tr")
+    th=document.createElement("th")
+    th.innerHTML="Gamer"
+    tr.appendChild(td)
+    th=document.createElement("th")
+    th.innerHTML="is today"
+    tr.appendChild(td)
+    th=document.createElement("th")
+    th.innerHTML="given by"
+    tr.appendChild(td)
+    mytab.appendChild(tr)
 		for (var user in data.state){ 
 			tr=document.createElement("tr")
 			tr.addEventListener('click',selectUser,data.state[user].name)
@@ -135,10 +146,12 @@
 <div id="output"></div>
 
 <form name="myform">
+<!--
 <p>
 <textarea name="outputtext" rows="20" cols="50"></textarea>
 </p>
-<p>
+-->
+  <p>
 <input type="text" name="inputtext" value="Moin">
 </p>
 <p>
