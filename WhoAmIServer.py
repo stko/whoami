@@ -44,8 +44,14 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 		state=[]
 		for user_data in self.game.values():
 			state.append(user_data['user'])
+		zombie_web_sockets=[]
 		for ws in self.game.keys():
-			ws.send_message(dumps({'type': 'state', 'state': state}))
+    	try:
+			  ws.send_message(dumps({'type': 'state', 'state': state}))
+      except:
+        zombie_web_sockets.append(ws)
+    for zombie in zombie_web_sockets:
+      del self.game[zombie]
 						 
 	def on_ws_message(self, message):
 		global games
