@@ -72,13 +72,13 @@
     tr=document.createElement("tr")
     th=document.createElement("th")
     th.innerHTML="Gamer"
-    th.appendChild(th)
-    td=document.createElement("th")
-    td.innerHTML="is today"
-    th.appendChild(th)
-    td=document.createElement("th")
-    td.innerHTML="given by"
-    th.appendChild(th)
+    tr.appendChild(th)
+    th=document.createElement("th")
+    th.innerHTML="is today"
+    tr.appendChild(th)
+    th=document.createElement("th")
+    th.innerHTML="given by"
+    tt.appendChild(th)
     mytab.appendChild(tr)
 		for (var user in data.state){ 
 			tr=document.createElement("tr")

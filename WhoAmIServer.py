@@ -79,6 +79,7 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 			if not self in self.game:
 				self.game[self] = {"ws": self.ws, "user": user_exist_already}
 			# echo message back to client
+			print("state status",self.game)
 			self.report_state()
 		if data['type']=='givename':
 			for key, user_entry in self.game.items():
@@ -97,7 +98,7 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 		global games
 		if not self.game_id in games: # error case..
 			return
-		self.game.remove(self)
+		del self.games[elf]
 		if len (self.game) ==0:
 			games.remove(self.game)
 		else:
