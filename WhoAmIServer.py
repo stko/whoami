@@ -98,7 +98,7 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 		global games
 		if not self.game_id in games: # error case..
 			return
-		del self.games[elf]
+		del self.game[self]
 		if len (self.game) ==0:
 			games.remove(self.game)
 		else:
