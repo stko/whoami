@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-
+<html>
 <meta charset="utf-8" />
-
+<head>
+  
 <title>Who Am I - designed by Nathalie &amp; Chris</title>
 
 <script language="javascript" type="text/javascript">
@@ -121,9 +122,10 @@
 
   function writeToScreen(message)
   {
+    /*
     document.myform.outputtext.value += message
     document.myform.outputtext.scrollTop = document.myform.outputtext.scrollHeight;
-
+  */
   }
 
   window.addEventListener("load", init, false);
@@ -142,7 +144,9 @@
    }
 
 </script>
-
+</head>
+<body>
+  
 <div id="output"></div>
 
 <form name="myform">
@@ -161,10 +165,10 @@
 <textarea name="url" cols="50"></textarea>
 </p>
 <p>
-<input type="button" name=sendButton value="Send" onClick="sendText();">
-<input type="button" name=clearButton value="Clear" onClick="clearText();">
-<input type="button" name=disconnectButton value="Disconnect" onClick="doDisconnect();">
-<input type="button" name=connectButton value="Connect" onClick="doConnect();">
+<input type="button" name="sendButton" value="Send" onclick="sendText();">
+<input type="button" name="clearButton" value="Clear" onclick="clearText();">
+<input type="button" name="disconnectButton" value="Disconnect" onclick="doDisconnect();">
+<input type="button" name="connectButton" value="Connect" onclick="doConnect();">
 </p>
 <p>
 Name:<input type="text" name="username" value="Moin">
@@ -173,7 +177,7 @@ Name:<input type="text" name="username" value="Moin">
 shall be:<input type="text" name="newname" value="Moin">
 </p>
 <p>
-<input type="button" name=connectButton value="GiveName" onClick="doGiveName();">
+<input type="button" name="connectButton" value="GiveName" onclick="doGiveName();">
 </p>
 </form>
 <table id="tab">
@@ -188,6 +192,7 @@ td.innerHTML="test"
 tr.appendChild(td)
 mytab.appendChild(tr)
 </script>
-
+  
+</body>
 </html> 
 
