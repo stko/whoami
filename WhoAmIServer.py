@@ -44,14 +44,14 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 		state=[]
 		for user_data in self.game.values():
 			state.append(user_data['user'])
-		zombie_web_sockets=[]
-		for ws in self.game.keys():
-    	try:
-			  ws.send_message(dumps({'type': 'state', 'state': state}))
-      except:
-        zombie_web_sockets.append(ws)
-    for zombie in zombie_web_sockets:
-      del self.game[zombie]
+			zombie_web_sockets=[]
+			for ws in self.game.keys():
+				try:
+					ws.send_message(dumps({'type': 'state', 'state': state}))
+				except:
+					zombie_web_sockets.append(ws)
+			for zombie in zombie_web_sockets:
+				del self.game[zombie]
 						 
 	def on_ws_message(self, message):
 		global games
@@ -61,7 +61,8 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 		data=loads(str(message,"UTF8"))
 		if not data["game"] in games:
 			games[data["game"]]={}
-		self.game=games[data["game"]]
+		self.game_id=data["game"]
+    self.game=games[data["game"]]
 		if data['type']=='connect':
 			self.name=data["name"]
 			user_exist_already=None
