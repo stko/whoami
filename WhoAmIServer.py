@@ -62,7 +62,7 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 		if not data["game"] in games:
 			games[data["game"]]={}
 		self.game_id=data["game"]
-    self.game=games[data["game"]]
+		self.game=games[data["game"]]
 		if data['type']=='connect':
 			self.name=data["name"]
 			user_exist_already=None
@@ -95,7 +95,7 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 	def on_ws_closed(self):
 		self.log_message('%s','websocket closed')
 		global games
-		if not self.game in games: # error case..
+		if not self.game_id in games: # error case..
 			return
 		self.game.remove(self)
 		if len (self.game) ==0:
