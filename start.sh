@@ -1,1 +1,1 @@
-python WhoAmIServer.py
+python3 WhoAmIServer.py
