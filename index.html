@@ -1,198 +1,55 @@
-<!DOCTYPE html>
-<html>
-<meta charset="utf-8" />
+<!doctype html>
+<html lang="en">
+
 <head>
-  
-<title>Who Am I - designed by Nathalie &amp; Chris</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Who Am I - designed by Nathalie &amp; Chris</title>
 
-<script language="javascript" type="text/javascript">
-  function isSecure()
-  {
-    return window.location.protocol == 'https:';
-  }
-    
-  function init()
-  {
-    if (isSecure()) {
-        document.myform.url.value = window.location.href.replace('https://','wss://')+"ws1.ws";
-    } else {
-        document.myform.url.value = window.location.href.replace('http://','ws://')+"ws1.ws";
-    }
-    document.myform.inputtext.value = "Hello World!"
-    document.myform.disconnectButton.disabled = true;
-  }
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 
-  function doConnect()
-  {
-    websocket = new WebSocket(document.myform.url.value);
-    websocket.onopen = function(evt) { onOpen(evt) };
-    websocket.onclose = function(evt) { onClose(evt) };
-    websocket.onmessage = function(evt) { onMessage(evt) };
-    websocket.onerror = function(evt) { onError(evt) };
-  }
+	<script src="https://unpkg.com/vue@2.2.4/dist/vue.js"></script>
 
-  function doGiveName()
-  {
-    doSend( JSON.stringify({"type": "givename", "user" : document.myform.username.value, "whoami" : document.myform.newname.value, "game" : document.myform.gameid.value} ));
-  }
-	
-
-  function selectUser(event)
-  {
-    document.myform.username.value=event.target.innerHTML
-  }
-	
-
-
-  function onOpen(evt)
-  {
-    writeToScreen("connected\n");
-    document.myform.connectButton.disabled = true;
-    document.myform.disconnectButton.disabled = false;
-    doSend( JSON.stringify({"type": "connect", "name" : document.myform.inputtext.value, "game" : document.myform.gameid.value} ));
-  }
-
-  function onClose(evt)
-  {
-    writeToScreen("disconnected\n");
-    document.myform.connectButton.disabled = false;
-    document.myform.disconnectButton.disabled = true;
-  }
-
-  function onMessage(evt)
-  {
-    writeToScreen("response: " + evt.data + '\n');
-	  data=JSON.parse(evt.data)
-	  console.log("data received",data)
-	  if (data.type == 'state'){
-		mytab=document.getElementById("tab")
-		while (mytab.firstChild){
-			mytab.removeChild(mytab.firstChild)
-		}
-    tr=document.createElement("tr")
-    th=document.createElement("th")
-    th.innerHTML="Gamer"
-    tr.appendChild(th)
-    th=document.createElement("th")
-    th.innerHTML="is today"
-    tr.appendChild(th)
-    th=document.createElement("th")
-    th.innerHTML="given by"
-    tr.appendChild(th)
-    mytab.appendChild(tr)
-		for (var user in data.state){ 
-			tr=document.createElement("tr")
-			tr.addEventListener('click',selectUser,data.state[user].name)
-			td=document.createElement("td")
-			td.innerHTML=data.state[user].name
-			tr.appendChild(td)
-			td=document.createElement("td")
-			if (document.myform.inputtext.value==data.state[user].name){
-				td.innerHTML='???'
-			} else{ 
-				td.innerHTML=data.state[user].whoami
-			}
-			tr.appendChild(td)
-			td=document.createElement("td")
-			td.innerHTML=data.state[user].by
-			tr.appendChild(td)
-
-			mytab.appendChild(tr)
-		}
-	}
-	  
-  }
-
-  function onError(evt)
-  {
-    writeToScreen('error: ' + evt.data + '\n');
-
-    websocket.close();
-
-    document.myform.connectButton.disabled = false;
-    document.myform.disconnectButton.disabled = true;
-
-  }
-
-  function doSend(message)
-  {
-    writeToScreen("sent: " + message + '\n'); 
-    websocket.send(message);
-  }
-
-  function writeToScreen(message)
-  {
-    /*
-    document.myform.outputtext.value += message
-    document.myform.outputtext.scrollTop = document.myform.outputtext.scrollHeight;
-  */
-  }
-
-  window.addEventListener("load", init, false);
-
-
-   function sendText() {
-        doSend( document.myform.inputtext.value );
-   }
-
-  function clearText() {
-        document.myform.outputtext.value = "";
-   }
-
-   function doDisconnect() {
-        websocket.close();
-   }
-
-</script>
+	<!--link rel="stylesheet" href="whoami.css"-->
+	<script src="whoami.js"></script>
 </head>
 <body>
-  
-<div id="output"></div>
+	
+	<div id="page" data-role="page">
+	<div id="header" data-role="header">
+		Bla
+	</div>
+	<div class="ui-content">
+		<form name="myform">
+				<label for="name">Your Name:</label>
+				<input type="text" name="name" id="name" placeholder="Enter your Name here" value="">
+				<label for="gameid">Game ID:</label>
+				<input type="text" name="gameid" id="gameid" placeholder="Enter a game ID to join an running game" value="">
 
-<form name="myform">
-<!--
-<p>
-<textarea name="outputtext" rows="20" cols="50"></textarea>
-</p>
--->
-  <p>
-<input type="text" name="inputtext" value="Moin">
-</p>
-<p>
-	<input type="text" name="gameid" value="">
-</p>
-<p>
-<textarea name="url" cols="50"></textarea>
-</p>
-<p>
-<input type="button" name="sendButton" value="Send" onclick="sendText();">
-<input type="button" name="clearButton" value="Clear" onclick="clearText();">
-<input type="button" name="disconnectButton" value="Disconnect" onclick="doDisconnect();">
-<input type="button" name="connectButton" value="Connect" onclick="doConnect();">
-</p>
-<p>
-Name:<input type="text" name="username" value="Moin">
-</p>
-<p>
-shall be:<input type="text" name="newname" value="Moin">
-</p>
-<p>
-<input type="button" name="connectButton" value="GiveName" onclick="doGiveName();">
-</p>
-</form>
-<table id="tab">
-</table>
 
-<script>
-console.log("moin")
-mytab=document.getElementById("tab")
-tr=document.createElement("tr")
-td=document.createElement("td")
-td.innerHTML="test"
-tr.appendChild(td)
-mytab.appendChild(tr)
-</script>
-  
+		<!--input type="button" name="connectButton" value="Connect" onclick="doConnect();"-->
+		<a data-role="button" name="connectButton" id="connectButton"  onclick="doConnect();">Connect</a>
+		</p>
+		<p>
+		Name:<input type="text" name="username" value="Moin">
+		</p>
+		<p>
+		shall be:<input type="text" name="newname" value="Moin">
+		</p>
+		<p>
+		<a data-role="button" name="giveNameButton" id="giveNameButton"  onclick="doGiveName();">GiveName</a>
+		<!--input type="button" name="connectButton" value="GiveName" onclick="doGiveName();"-->
+		</p>
+		</form>
+		<table id="tab">
+		</table>
+		</div>
+		<div id="footer" data-role="footer">
+			footer
+		</div>
+	</div>
 </body>
 </html> 
 
