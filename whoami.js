@@ -8,24 +8,36 @@ function isSecure() {
 }
 
 function init() {
-	if (isSecure()) {
-		ws_url = window.location.href.replace('https://', 'wss://') + "ws1.ws";
+	if (window.location.path !== undefined) {
+		var path = window.location.path
 	} else {
-		ws_url = window.location.href.replace('http://', 'ws://') + "ws1.ws";
+		var path = "/"
+	}
+	if (isSecure()) {
+		ws_url = 'wss://' + window.location.hostname + ":" + window.location.port + path
+	} else {
+		ws_url = 'ws://' + window.location.hostname  + ":" + window.location.port + path
 	}
 	setButtons()
 	$('#name').change(function () {
-		if (typeof(Storage) !== "undefined") {
+		if (typeof (Storage) !== "undefined") {
 			localStorage.setItem("user", document.myform.name.value)
-		  }
+		}
 		setButtons()
 	});
 	$('#gameid').change(function () {
 		setButtons()
 	});
-	if (typeof(Storage) !== "undefined") {
+	if (typeof (Storage) !== "undefined") {
 		document.myform.name.value = localStorage.getItem("user")
-	  }
+	}
+	if (window.location.hash !== undefined) {
+		document.myform.gameid.value =window.location.hash.substr(1)
+	}
+	if (checkValidGameID() && checkValidUserName()){
+		doConnect()
+	}
+	$.mobile.popup.prototype.options.history = false;
 	setButtons()
 }
 
@@ -41,17 +53,28 @@ function doConnect() {
 	}
 }
 
-function doGiveName() {
-	doSend(JSON.stringify({ "type": "givename", "user": document.myform.username.value, "whoami": document.myform.newname.value, "game": document.myform.gameid.value }));
+function doGiveName(ok_to_send) {
+	if (ok_to_send){
+		doSend(JSON.stringify({ "type": "givename", "user": document.whoamiform.player.value, "whoami": document.whoamiform.whoami.value, "game": document.myform.gameid.value }));
+	}
+	$("#popupWhoAmI").popup('close');
 }
 
 
 function selectUser(event) {
-	document.myform.username.value = event.target.innerHTML
+	document.whoamiform.player.readOnly = true;
+	document.whoamiform.player.value = event.target.innerHTML
+	document.whoamiform.whoami.value = ""
+	console.log("history", $( "#popupWhoAmI" ).popup( "option", "history" ))
+	$("#popupWhoAmI").popup("open");
 }
 
 function checkValidGameID() {
 	return document.myform.gameid.value.length > 0
+}
+
+function checkValidUserName() {
+	return document.myform.name.value.length > 3
 }
 
 function setButtons() {
@@ -64,8 +87,8 @@ function setButtons() {
 		}
 		$("#connectButton").button({
 			disabled: true
-		  })
-		if (document.myform.name.value.length < 3){
+		})
+		if (!checkValidUserName()) {
 			$("#connectButton").text("Enter your Name to start")
 			$("#connectButton").button('disable')
 			return
@@ -79,6 +102,7 @@ function setButtons() {
 	} else {
 		document.myform.name.disabled = true;
 		document.myform.gameid.disabled = true;
+		$("#connectButton").button('enable')
 		$("#connectButton").text("Leave Game")
 	}
 }
@@ -137,6 +161,7 @@ function onMessage(evt) {
 	}
 	if (data.type == 'gameid') {
 		document.myform.gameid.value = data.gameid
+		window.location.hash = data.gameid;
 	}
 
 

@@ -29,22 +29,36 @@
 				<input type="text" name="gameid" id="gameid" placeholder="Enter a game ID to join an running game" value="">
 
 
-		<!--input type="button" name="connectButton" value="Connect" onclick="doConnect();"-->
 		<a data-role="button" name="connectButton" id="connectButton"  onclick="doConnect();">Connect</a>
-		</p>
-		<p>
-		Name:<input type="text" name="username" value="Moin">
-		</p>
-		<p>
-		shall be:<input type="text" name="newname" value="Moin">
-		</p>
-		<p>
-		<a data-role="button" name="giveNameButton" id="giveNameButton"  onclick="doGiveName();">GiveName</a>
-		<!--input type="button" name="connectButton" value="GiveName" onclick="doGiveName();"-->
-		</p>
 		</form>
 		<table id="tab">
 		</table>
+		<div data-role="popup" data-history="false" id="popupWhoAmI" data-theme="a" class="ui-corner-all">
+			<form name="whoamiform" onsubmit="return false;">
+				<div style="padding:10px 20px;">
+					<h3>Who Am I</h3>
+					<label for="player">New Identity of</label>
+					<input type="text" name="player" id="player" value="" placeholder="Players Name" data-theme="a">
+					<label for="whoami">shall be:</label>
+					<input type="text" name="whoami" id="whoami" value="" placeholder="the new identity" data-theme="a">
+					<button class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check" onclick="doGiveName(true);">Assign new Identity</button>
+					<button class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-delete" onclick="doGiveName(false);">Cancel</button>
+				</div>
+			</form>
+		</div>
+		<a data-role="button" name="startAgainButton" id="startAgainButton" onclick="doNewGame();">Start Again</a>
+		<a href="#popupDialog" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-delete ui-btn-icon-left ui-btn-b">Delete page...</a>
+		<div data-role="popup" data-history="false" id="popupDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="max-width:400px;">
+			<div data-role="header" data-theme="a">
+			<h1>Delete Page?</h1>
+			</div>
+			<div role="main" class="ui-content">
+				<h3 class="ui-title">Are you sure you want to delete this page?</h3>
+			<p>This action cannot be undone.</p>
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Cancel</a>
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">Delete</a>
+			</div>
+		</div>
 		</div>
 		<div id="footer" data-role="footer">
 			footer
