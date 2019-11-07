@@ -72,3 +72,25 @@ table.blueTable {
 	padding: 2px 8px;
 	border-radius: 5px;
   }
+
+  .tdname {
+	width: 100%;
+	padding: 25px;
+	background-color: coral;
+	color: white;
+	font-size: 25px;
+  }
+  .tdassignee {
+	width: 100%;
+	padding: 25px;
+	background-color: coral;
+	color: red;
+	font-size: 25px;
+  }
+  .tdwhoami {
+	width: 100%;
+	padding: 25px;
+	background-color: coral;
+	color: blue;
+	font-size: 25px;
+  }

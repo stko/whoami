@@ -5,7 +5,9 @@ import threading
 import ssl
 from json import loads, dumps
 from base64 import b64encode
+import random
 
+import pprint 
 VER = sys.version_info[0]
 if VER >= 3:
 	from socketserver import ThreadingMixIn
@@ -57,7 +59,10 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 
 	def create_game_id(self):
 		global games
-		return "abc"
+		id= str(random.randint(10000000,99999999))
+		while id in games:
+			id= str(random.randint(10000000,99999999))
+		return id
 
 	def on_ws_message(self, message):
 		global games
@@ -67,8 +72,10 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 		data = loads(str(message, "UTF8"))
 		self.game_id = data["game"]
 		if self.game_id == "" or not self.game_id in games:
+			print("old game id:",self.game_id,repr(games))
 			self.game_id = self.create_game_id()
 		if not self.game_id in games:
+			print("create game with id ",self.game_id)
 			games[self.game_id] = {}
 		self.game = games[self.game_id]
 		if data['type'] == 'connect':
@@ -110,6 +117,7 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 			return
 		del self.game[self]
 		if len(self.game) == 0:
+			print("Clean games ?1? ")
 			del games[self.game_id]
 		else:
 			self.report_state()

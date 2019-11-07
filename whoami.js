@@ -65,7 +65,6 @@ function selectUser(event) {
 	document.whoamiform.player.readOnly = true;
 	document.whoamiform.player.value = event.target.innerHTML
 	document.whoamiform.whoami.value = ""
-	console.log("history", $( "#popupWhoAmI" ).popup( "option", "history" ))
 	$("#popupWhoAmI").popup("open");
 }
 
@@ -143,17 +142,23 @@ function onMessage(evt) {
 			tr = document.createElement("tr")
 			tr.addEventListener('click', selectUser, data.state[user].name)
 			var td = document.createElement("td")
+			td.classList.add("tdname");
 			td.innerHTML = data.state[user].name
 			tr.appendChild(td)
 			td = document.createElement("td")
+			td.classList.add("tdassignee");
+			td.innerHTML = data.state[user].by
+			tr.appendChild(td)
+			mytab.appendChild(tr)
+			tr = document.createElement("tr")
+			td = document.createElement("td")
+			td.classList.add("tdwhoami");
+			td.setAttribute("colspan","2");
 			if (document.myform.name.value == data.state[user].name) {
 				td.innerHTML = '???'
 			} else {
 				td.innerHTML = data.state[user].whoami
 			}
-			tr.appendChild(td)
-			td = document.createElement("td")
-			td.innerHTML = data.state[user].by
 			tr.appendChild(td)
 
 			mytab.appendChild(tr)
@@ -178,10 +183,7 @@ function doSend(message) {
 }
 
 function writeToScreen(message) {
-	/*
-	document.myform.outputtext.value += message
-	document.myform.outputtext.scrollTop = document.myform.outputtext.scrollHeight;
-  */
+	console.log(message)
 }
 
 window.addEventListener("load", init, false);
