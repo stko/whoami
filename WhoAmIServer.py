@@ -40,6 +40,7 @@ class User(dict):
 		self['name'] = name
 		self['whoami'] = ''
 		self['by'] = ''
+		self['online'] = True
 
 
 class WSSimpleEcho(HTTPWebSocketsHandler):
@@ -47,15 +48,16 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 	def report_state(self):
 		state = []
 		for user_data in self.game.values():
-			state.append(user_data['user'])
-			zombie_web_sockets = []
-			for ws in self.game.keys():
-				try:
-					ws.send_message(dumps({'type': 'state', 'state': state}))
-				except:
-					zombie_web_sockets.append(ws)
-			for zombie in zombie_web_sockets:
-				del self.game[zombie]
+			if user_data['user']['online']:
+				state.append(user_data['user'])
+		zombie_web_sockets = []
+		for ws in self.game.keys():
+			try:
+				ws.send_message(dumps({'type': 'state', 'state': state}))
+			except:
+				zombie_web_sockets.append(ws)
+		for zombie in zombie_web_sockets:
+			del self.game[zombie]
 
 	def create_game_id(self):
 		global games
@@ -93,6 +95,7 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 				del self.game[user_entry_to_remove]
 			if not self in self.game:
 				self.game[self] = {"ws": self.ws, "user": user_exist_already}
+			user_exist_already['online']=True
 			# echo message back to client
 			print("state status", self.game)
 			self.send_message(
@@ -103,7 +106,12 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 				if user_entry['user']['name'] == data['user']:
 					user_entry['user']['whoami'] = data['whoami']
 					user_entry['user']['by'] = self.name
-					self.report_state()
+			self.report_state()
+		if data['type'] == 'restart':
+			for key, user_entry in self.game.items():
+				user_entry['user']['whoami'] = "cleaned"
+				user_entry['user']['by'] = self.name
+			self.report_state()
 		self.log_message('websocket received "%s"', str(message))
 
 	def on_ws_connected(self):
@@ -115,8 +123,13 @@ class WSSimpleEcho(HTTPWebSocketsHandler):
 		global games
 		if not self.game_id in games:  # error case..
 			return
-		del self.game[self]
-		if len(self.game) == 0:
+		self.game[self]['user']['online']=False
+		game_is_empty=True
+		for player in self.game.values():
+			if player['user']['online']:
+				game_is_empty=False
+				break
+		if game_is_empty:
 			print("Clean games ?1? ")
 			del games[self.game_id]
 		else:

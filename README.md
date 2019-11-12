@@ -1,28 +1,20 @@
-# httpwebsockethandler
-Python combines HTTP and WebSocketServer with SSL support
+# Who Am I
+A little fun project implementing a multiplayer interface for the popular "Who Am I" game
 
-##command line options
+see it working online on https://stko-whoami.glitch.me
 
-```shell
-#assume ExampleWSServer.py and HTTPWebSocketsHandler.py are in the current directory
-nohup python ExampleWSServer.py 8000 secure username:mysecret >>ws.log&
-```
+## Usage
+The players sit all together. The first one logs into the a.m. website, entering his name (which is stored locally in his browser), starts a new game and shares it with the share button with the other players (alternatively tells the game ID to the other)
 
-This uses SSL/https. Change username:mysecret in a username:password chosen by yourself. The websserver uses port 8000 by default, and can be changed by an optional parameter:
+After also logging in, all players can see each other in the table. By tap onto another players name, a player can give a new identity to the other player.
 
-`nohup python ExampleWSServer.py 8001 secure username:mysecret >>ws.log&`
+All players can see these assignments, but not the affected player himself.
 
-Providing a user:password is optional, as well as using SSL/https. When the website is only accessible within your LAN, then the server can be used as plain http, by omitting the secure parameter. The following parameter formats are valid:
+Now the game can start.
 
-```shell
-nohup python ExampleWSServer.py 8001 secure user:password >>ws.log&
+With the "Restart Game" button all entries are reseted and the game can go into the next round.
 
-#no username and password requested
-nohup python ExampleWSServer.py 8000 secure >>ws.log&
+## Technics
+This game is an interesting mix of the great glitch server platform, some good python webserver (supporting both normal http and websocket on the same port!) and the jquery mobile API for the web frontend
 
-#plain http, with optional port
-nohup python ExampleWSServer.py 8002 >>ws.log&
-
-#plain http, default port 8000
-nohup python ExampleWSServer.py >>ws.log&
-```
+This game was programmed while laying at the pool on the Disney Fantasy Ship doing a cruise between Florida, Mexico and the Bahamas.

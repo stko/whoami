@@ -6,6 +6,11 @@ table {
 	font-size: 1em;
 }
 
+.ui-title {
+	font-size: 2em;
+}
+
+
 .ui-draggable, .ui-droppable {
 	background-position: top;
 }
@@ -15,13 +20,21 @@ table {
 	border-radius: 10px;
 }
 
-table.blueTable {
+table {
 	border: 1px solid #1C6EA4;
 	background-color: #EEEEEE;
 	width: 100%;
 	text-align: left;
 	border-collapse: collapse;
   }
+
+  table.blueTable {
+	  border: 1px solid #1C6EA4;
+	  background-color: #EEEEEE;
+	  width: 100%;
+	  text-align: left;
+	  border-collapse: collapse;
+	}
   table.blueTable td, table.blueTable th {
 	border: 1px solid #AAAAAA;
 	padding: 3px 2px;
@@ -74,18 +87,15 @@ table.blueTable {
   }
 
   .tdname {
-	width: 100%;
-	padding: 25px;
-	background-color: coral;
-	color: white;
-	font-size: 25px;
+	width: 50%;
+	padding: 5px;
+	font-size: 16px;
   }
   .tdassignee {
-	width: 100%;
-	padding: 25px;
-	background-color: coral;
-	color: red;
-	font-size: 25px;
+	width: 50%;
+	padding: 5px;
+	font-size: 12px;
+	text-align: right;
   }
   .tdwhoami {
 	width: 100%;
@@ -93,4 +103,5 @@ table.blueTable {
 	background-color: coral;
 	color: blue;
 	font-size: 25px;
+	text-align: center;
   }

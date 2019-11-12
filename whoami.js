@@ -8,7 +8,7 @@ function isSecure() {
 }
 
 function init() {
-	if (window.location.path !== undefined) {
+if (window.location.path !== undefined) {
 		var path = window.location.path
 	} else {
 		var path = "/"
@@ -16,12 +16,13 @@ function init() {
 	if (isSecure()) {
 		ws_url = 'wss://' + window.location.hostname + ":" + window.location.port + path
 	} else {
-		ws_url = 'ws://' + window.location.hostname  + ":" + window.location.port + path
+		ws_url = 'ws://' + window.location.hostname + ":" + window.location.port + path
 	}
+	//$("#connectButton").button()
 	setButtons()
 	$('#name').change(function () {
 		if (typeof (Storage) !== "undefined") {
-			localStorage.setItem("user", document.myform.name.value)
+			localStorage.setItem("user", $("#username").val())
 		}
 		setButtons()
 	});
@@ -29,12 +30,12 @@ function init() {
 		setButtons()
 	});
 	if (typeof (Storage) !== "undefined") {
-		document.myform.name.value = localStorage.getItem("user")
+		$("#username").val(localStorage.getItem("user"))
 	}
 	if (window.location.hash !== undefined) {
-		document.myform.gameid.value =window.location.hash.substr(1)
+		$("#gameid").val(window.location.hash.substr(1))
 	}
-	if (checkValidGameID() && checkValidUserName()){
+	if (checkValidGameID() && checkValidUserName()) {
 		doConnect()
 	}
 	$.mobile.popup.prototype.options.history = false;
@@ -54,10 +55,33 @@ function doConnect() {
 }
 
 function doGiveName(ok_to_send) {
-	if (ok_to_send){
-		doSend(JSON.stringify({ "type": "givename", "user": document.whoamiform.player.value, "whoami": document.whoamiform.whoami.value, "game": document.myform.gameid.value }));
+	if (ok_to_send) {
+		doSend(JSON.stringify({ "type": "givename", "user": document.whoamiform.player.value, "whoami": document.whoamiform.whoami.value, "game": $("#gameid").val() }));
 	}
 	$("#popupWhoAmI").popup('close');
+}
+
+function doNewGame() {
+	console.log("new game")
+	doSend(JSON.stringify({ "type": "restart", "game": $("#gameid").val() }));
+}
+
+function doShare() {
+	console.log("Share")
+	if (navigator.share) {
+		navigator.share({
+		  title: 'Share the Game',
+		  text: 'Send the gsme straight to your friends',
+		  url: window.location.href
+		}).then(() => {
+		  console.log('Thanks for sharing!');
+		})
+		.catch(err => {
+		  console.log(`Couldn't share because of`, err.message);
+		});
+	  } else {
+		console.log('web share not supported');
+	  }
 }
 
 
@@ -69,39 +93,40 @@ function selectUser(event) {
 }
 
 function checkValidGameID() {
-	return document.myform.gameid.value.length > 0
+	return $("#gameid").val().length > 0
 }
 
 function checkValidUserName() {
-	return document.myform.name.value.length > 3
+	return $("#username").val().length > 3
 }
 
 function setButtons() {
 	if (websocket == null) {
-		document.myform.name.disabled = false;
-		document.myform.gameid.disabled = false;
+		$("#username").prop('disabled', false);
+		$("#gameid").prop('disabled', false);
+		//$("#connectButton").button('disable');
+		//$("#sharebutton").button().button('disable');
 		var mytab = document.getElementById("tab")
 		while (mytab.firstChild) {
 			mytab.removeChild(mytab.firstChild)
 		}
-		$("#connectButton").button({
-			disabled: true
-		})
 		if (!checkValidUserName()) {
 			$("#connectButton").text("Enter your Name to start")
-			$("#connectButton").button('disable')
+			//$("#connectButton").button('disable')
 			return
 		}
-		$("#connectButton").button('enable')
+		//$("#connectButton").button('enable')
 		if (checkValidGameID()) {
 			$("#connectButton").text("Join existing Game")
 		} else {
 			$("#connectButton").text("Create new Game")
 		}
+		document.getElementById("hint").innerHTML=""
 	} else {
-		document.myform.name.disabled = true;
-		document.myform.gameid.disabled = true;
-		$("#connectButton").button('enable')
+		$("#username").prop('disabled', true);
+		$("#gameid").prop('disabled', true);
+		//$("#sharebutton").button('enable');
+		//$("#connectButton").button('enable')
 		$("#connectButton").text("Leave Game")
 	}
 }
@@ -109,8 +134,10 @@ function setButtons() {
 function onOpen(evt) {
 	writeToScreen("connected\n");
 	setButtons()
-	doSend(JSON.stringify({ "type": "connect", "name": document.myform.name.value, "game": document.myform.gameid.value }));
+	doSend(JSON.stringify({ "type": "connect", "name": $("#username").val(), "game": $("#gameid").val() }));
 }
+
+
 
 function onClose(evt) {
 	writeToScreen("disconnected\n");
@@ -127,19 +154,15 @@ function onMessage(evt) {
 		while (mytab.firstChild) {
 			mytab.removeChild(mytab.firstChild)
 		}
-		var tr = document.createElement("tr")
-		var th = document.createElement("th")
-		th.innerHTML = "Gamer"
-		tr.appendChild(th)
-		th = document.createElement("th")
-		th.innerHTML = "is today"
-		tr.appendChild(th)
-		th = document.createElement("th")
-		th.innerHTML = "given by"
-		tr.appendChild(th)
-		mytab.appendChild(tr)
+		var hint=document.getElementById("hint")
+		if (data.state.length>0){
+			hint.innerHTML="Tap the Player name to change his Identity"
+		} else {
+			hint.innerHTML=""
+		}
+
 		for (var user in data.state) {
-			tr = document.createElement("tr")
+			var tr = document.createElement("tr")
 			tr.addEventListener('click', selectUser, data.state[user].name)
 			var td = document.createElement("td")
 			td.classList.add("tdname");
@@ -153,8 +176,8 @@ function onMessage(evt) {
 			tr = document.createElement("tr")
 			td = document.createElement("td")
 			td.classList.add("tdwhoami");
-			td.setAttribute("colspan","2");
-			if (document.myform.name.value == data.state[user].name) {
+			td.setAttribute("colspan", "2");
+			if ($("#username").val() == data.state[user].name) {
 				td.innerHTML = '???'
 			} else {
 				td.innerHTML = data.state[user].whoami
@@ -165,7 +188,7 @@ function onMessage(evt) {
 		}
 	}
 	if (data.type == 'gameid') {
-		document.myform.gameid.value = data.gameid
+		$("#gameid").val(data.gameid)
 		window.location.hash = data.gameid;
 	}
 
@@ -186,7 +209,10 @@ function writeToScreen(message) {
 	console.log(message)
 }
 
-window.addEventListener("load", init, false);
+//window.addEventListener("load", init, false);
+$( document ).on( "pageinit", "#page", function( event ) {
+	init()
+  });
 
 
 
