@@ -71,7 +71,7 @@ function doShare() {
 	if (navigator.share) {
 		navigator.share({
 		  title: 'Share the Game',
-		  text: 'Send the gsme straight to your friends',
+		  text: 'Do you like to play "Who Am I" with me?',
 		  url: window.location.href
 		}).then(() => {
 		  console.log('Thanks for sharing!');
